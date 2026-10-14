@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  hotel-app:
+    container_name: hotel-nextjs-app
+    build:
+      context: ./my-app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./my-app/.env.local
+    restart: unless-stopped
+    networks:
+      - hotel-network
+
+  diagnostic-agent:
+    container_name: hotel-ops-agent
+    build:
+      context: ./agent-ops
+      dockerfile: Dockerfile
+    env_file:
+      - ./agent-ops/.env
+    restart: "no" 
+    depends_on:
+      - hotel-app
+    networks:
+      - hotel-network
+
+networks:
+  hotel-network:
+    driver: bridge
