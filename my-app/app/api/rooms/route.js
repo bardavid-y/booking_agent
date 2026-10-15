@@ -39,3 +39,41 @@ export async function POST(request) {
     );
   }
 }
+
+// PATCH /api/rooms - Update room status
+export async function PATCH(request) {
+  try {
+    await connectToDatabase();
+    const { roomNumber, status } = await request.json();
+
+    if (!roomNumber || !status) {
+      return NextResponse.json(
+        { success: false, error: "roomNumber and status are required." },
+        { status: 400 }
+      );
+    }
+
+    // Find the room and update its status
+    const result = await Room.updateOne(
+      { roomNumber: String(roomNumber) },
+      { status: status } 
+    );
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json(
+        { success: false, error: "Room not found." },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: true, message: `Room status updated to ${status}.` },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
+  }
+}
