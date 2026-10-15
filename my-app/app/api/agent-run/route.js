@@ -2,6 +2,8 @@
 import { OpenAI } from "openai";
 import { Agent, run, setDefaultOpenAIClient, tool } from "@openai/agents"; // <-- Add `tool` here
 import { z } from "zod";
+// IMPORT YOUR NEW MAILER HERE:
+import { sendAdminAlert } from "@/lib/mailer";
 
 process.env.OPENAI_TRACING_ENABLED = "false";
 const ollamaClient = new OpenAI({
